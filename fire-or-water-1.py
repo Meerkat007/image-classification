@@ -36,7 +36,7 @@ validationset = torchvision.datasets.ImageFolder(
     transform=transform
 )
 validationloader = torch.utils.data.DataLoader(
-    trainset,
+    validationset,
     batch_size=4,
     num_workers=2,
     shuffle=True
@@ -66,28 +66,7 @@ def imshow(img):
 # # print labels
 # print(' '.join('%5s' % classes[labels[j]] for j in range(4)))
 
-import torch.nn as nn
-import torch.nn.functional as F
-
-
-class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 27 * 27, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
-
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 27 * 27)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
+from net import Net
 
 net = Net()
 
@@ -97,6 +76,8 @@ net = Net()
 # Let's use a Classification Cross-Entropy loss and SGD with momentum.
 
 import torch.optim as optim
+import torch.nn as nn
+import torch.nn.functional as F
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
@@ -161,5 +142,5 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-print('Accuracy of the network on the test images: %d %%' % (
+print('Accuracy of the network on the validation images: %d %%' % (
     100 * correct / total))
