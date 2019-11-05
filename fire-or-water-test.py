@@ -10,8 +10,12 @@ import torchvision.transforms as transforms
 
 
 transform = transforms.Compose(
-    [transforms.ToTensor(),
-     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    [
+        transforms.Resize(120),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ]
+)
 
 testset = torchvision.datasets.ImageFolder(
     root=testset_data_path,
@@ -20,7 +24,7 @@ testset = torchvision.datasets.ImageFolder(
 testloader = torch.utils.data.DataLoader(
     testset,
     batch_size=4,
-    num_workers=2,
+    num_workers=1,
     shuffle=True
 )
 
@@ -39,7 +43,9 @@ with torch.no_grad():
         images, labels = data
         outputs = net(images)
         _, predicted = torch.max(outputs.data, 1)
+        print(labels, predicted)
         total += labels.size(0)
+
         correct += (predicted == labels).sum().item()
 
 print('Accuracy of the network on the test images: %d %%' % (

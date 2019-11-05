@@ -23,7 +23,7 @@ trainset = torchvision.datasets.ImageFolder(
 trainloader = torch.utils.data.DataLoader(
     trainset,
     batch_size=4,
-    num_workers=2,
+    num_workers=1,
     shuffle=True
 )
 
@@ -38,7 +38,7 @@ validationset = torchvision.datasets.ImageFolder(
 validationloader = torch.utils.data.DataLoader(
     validationset,
     batch_size=4,
-    num_workers=2,
+    num_workers=1,
     shuffle=True
 )
 
@@ -90,7 +90,7 @@ optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 # We simply have to loop over our data iterator, and feed the inputs to the
 # network and optimize.
 
-for epoch in range(2):  # loop over the dataset multiple times
+for epoch in range(200):  # loop over the dataset multiple times
 
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
@@ -138,7 +138,9 @@ with torch.no_grad():
     for data in validationloader:
         images, labels = data
         outputs = net(images)
+        
         _, predicted = torch.max(outputs.data, 1)
+        print(labels, predicted)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
